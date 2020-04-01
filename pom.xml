@@ -8,6 +8,13 @@
   <version>2.2-SNAPSHOT</version>
   <description>Barcode4J is a flexible generator for barcodes written in Java.</description>
   <url>http://barcode4j.sourceforge.net</url>
+  <distributionManagement>
+   <repository>
+     <id>github</id>
+     <name>GitHub Metanorma Apache Maven Packages</name>
+     <url>https://maven.pkg.github.com/metanorma/barcode4j</url>
+   </repository>
+  </distributionManagement>
   <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
     <project.reporting.outputEncoding>ISO-8859-1</project.reporting.outputEncoding>
