@@ -1,1 +1,1 @@
-# barcode4j
+# Fork of barcode4j with maven
