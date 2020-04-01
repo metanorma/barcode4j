@@ -7,7 +7,7 @@ JAR_FILE := barcode4j-$(JAR_VERSION).jar
 all: target/$(JAR_FILE)
 
 target/$(JAR_FILE):
-	mvn -Dmaven.test.skip=true clean package
+	mvn -Dmaven.test.skip=true clean deploy
 
 test: target/$(JAR_FILE)
 	mvn test
