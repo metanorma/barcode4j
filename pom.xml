@@ -98,7 +98,6 @@
     <!-- Java version -->
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
-    <maven.compiler.release>8</maven.compiler.release>
 
     <!-- Encoding -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -233,6 +232,12 @@
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
+          <!-- Ensure compatibility with JDK 8 and CI environments -->
+          <useSystemClassLoader>false</useSystemClassLoader>
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
+          <argLine>-Xmx1024m</argLine>
+          <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
 
