@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 Jeremias Maerki.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 
 /**
  * Test class for the UPC-A implementation.
- * 
+ *
  * @author Jeremias Maerki
  * @version $Id: UPCATest.java,v 1.1 2004-09-12 17:57:54 jmaerki Exp $
  */
@@ -47,12 +47,12 @@ public class UPCATest extends TestCase {
         //Test invalid characters in message
         try {
             UPCALogicImpl logic = new UPCALogicImpl(ChecksumMode.CP_AUTO);
-            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), "123èöö2");
+            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), "123\u00e8\u00f6\u00f62");
             fail("Expected an exception complaining about illegal characters");
         } catch (IllegalArgumentException iae) {
             //must fail
         }
-        
+
         //Test less than 12 characters
         try {
             UPCALogicImpl logic = new UPCALogicImpl(ChecksumMode.CP_AUTO);
@@ -61,11 +61,11 @@ public class UPCATest extends TestCase {
         } catch (IllegalArgumentException iae) {
             //must fail
         }
-        
+
         //Test more than 12 characters
         try {
             UPCALogicImpl logic = new UPCALogicImpl(ChecksumMode.CP_AUTO);
-            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), 
+            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(),
                     "123456789012344567890");
             fail("Expected an exception complaining about invalid message length");
         } catch (IllegalArgumentException iae) {
@@ -77,7 +77,7 @@ public class UPCATest extends TestCase {
         StringBuffer sb = new StringBuffer();
         UPCALogicImpl logic;
         String expected;
-        
+
         logic = new UPCALogicImpl(ChecksumMode.CP_AUTO);
         logic.generateBarcodeLogic(new MockClassicBarcodeLogicHandler(sb), "00123456789");
         expected = "<BC>"
@@ -112,12 +112,12 @@ public class UPCATest extends TestCase {
         //The same but with check mode
         sb.setLength(0);
         logic = new UPCALogicImpl(ChecksumMode.CP_CHECK);
-        logic.generateBarcodeLogic(new MockClassicBarcodeLogicHandler(sb), 
+        logic.generateBarcodeLogic(new MockClassicBarcodeLogicHandler(sb),
                 "001234567895");
         //System.out.println(expected);
         //System.out.println(sb.toString());
         assertEquals(expected, sb.toString());
-        
+
     }
 
 }

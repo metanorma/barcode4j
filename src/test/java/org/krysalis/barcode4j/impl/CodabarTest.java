@@ -44,7 +44,7 @@ public class CodabarTest extends TestCase {
 
         try {
             CodabarLogicImpl logic = new CodabarLogicImpl(ChecksumMode.CP_AUTO);
-            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), "123èöö2");
+            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), "123\u00e8\u00f6\u00f62");
             fail("Expected an exception complaining about illegal characters");
         } catch (IllegalArgumentException iae) {
             //must fail

@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 Jeremias Maerki.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ import org.apache.avalon.framework.configuration.DefaultConfiguration;
 
 /**
  * Test class for the POSTNET implementation.
- * 
+ *
  * @author Chris Dolphy
  * @version $Id: POSTNETTest.java,v 1.5 2008-05-13 13:00:43 jmaerki Exp $
  */
@@ -42,7 +42,7 @@ public class POSTNETTest extends TestCase {
         assertEquals('7', POSTNETLogicImpl.calcChecksum("11011-9000"));
         assertEquals('0', POSTNETLogicImpl.calcChecksum("400017265951"));
     }
-    
+
     public void testIllegalArguments() throws Exception {
         try {
             POSTNET impl = new POSTNET();
@@ -52,25 +52,25 @@ public class POSTNETTest extends TestCase {
             assertNotNull("Error message is empty", npe.getMessage());
         }
     }
-    
+
     public void testIgnoreChars() throws Exception {
         assertEquals("75368", POSTNETLogicImpl.removeIgnoredCharacters("75368"));
         assertEquals("110119000", POSTNETLogicImpl.removeIgnoredCharacters("11011-9000"));
     }
-    
+
     public void testLogic() throws Exception {
         StringBuffer sb = new StringBuffer();
         POSTNETLogicImpl logic;
         String expected;
-        
+
         try {
             logic = new POSTNETLogicImpl(ChecksumMode.CP_AUTO, false);
-            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), "123èöö2");
+            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), "123\u00e8\u00f6\u00f62");
             fail("Expected an exception complaining about illegal characters");
         } catch (IllegalArgumentException iae) {
             //must fail
         }
-        
+
         logic = new POSTNETLogicImpl(ChecksumMode.CP_AUTO, false);
         logic.generateBarcodeLogic(new MockClassicBarcodeLogicHandler(sb), "75368");
         expected = "<BC>"
@@ -85,8 +85,8 @@ public class POSTNETTest extends TestCase {
         //System.out.println(expected);
         //System.out.println(sb.toString());
         assertEquals(expected, sb.toString());
-        
-        
+
+
         sb.setLength(0);
         logic = new POSTNETLogicImpl(ChecksumMode.CP_ADD, false);
         logic.generateBarcodeLogic(new MockClassicBarcodeLogicHandler(sb), "75368");
@@ -103,8 +103,8 @@ public class POSTNETTest extends TestCase {
         //System.out.println(expected);
         //System.out.println(sb.toString());
         assertEquals(expected, sb.toString());
-        
-        
+
+
         sb.setLength(0);
         logic = new POSTNETLogicImpl(ChecksumMode.CP_CHECK, false);
         logic.generateBarcodeLogic(new MockClassicBarcodeLogicHandler(sb), "753681");
@@ -121,8 +121,8 @@ public class POSTNETTest extends TestCase {
         //System.out.println(expected);
         //System.out.println(sb.toString());
         assertEquals(expected, sb.toString());
-        
-        
+
+
         sb.setLength(0);
         logic = new POSTNETLogicImpl(ChecksumMode.CP_CHECK, false);
         try {
@@ -135,7 +135,7 @@ public class POSTNETTest extends TestCase {
 
     public void testDefaultsInXML() throws Exception {
         POSTNETBean refBean = new POSTNETBean();
-        
+
         POSTNET gen = new POSTNET();
         DefaultConfiguration cfg = new DefaultConfiguration("postnet");
         gen.configure(cfg);
@@ -157,5 +157,5 @@ public class POSTNETTest extends TestCase {
         assertEquals(refBean.getMsgPosition(), xmlBean.getMsgPosition());
         assertEquals(refBean.getPattern(), xmlBean.getPattern());
     }
-    
+
 }

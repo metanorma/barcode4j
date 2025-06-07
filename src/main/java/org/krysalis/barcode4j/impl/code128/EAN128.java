@@ -1,13 +1,13 @@
 /*
  * Copyright 2002-2004 Jeremias Maerki.
- * Copyright 2005 Jeremias Maerki, Dietmar Bürkle.
- * 
+ * Copyright 2005 Jeremias Maerki, Dietmar Buerkle.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,17 +25,17 @@ import org.krysalis.barcode4j.tools.Length;
 
 /**
  * This class is an implementation of the Code 128 barcode.
- * 
- * @author Jeremias Maerki, Dietmar Bürkle
+ *
+ * @author Jeremias Maerki, Dietmar Buerkle
  */
-public class EAN128 extends Code128 
+public class EAN128 extends Code128
             implements Configurable {
 
     /** Create a new instance. */
     public EAN128() {
         this.bean = new EAN128Bean();
     }
-    
+
     /**
      * @return the underlying Code128Bean
      */
@@ -51,8 +51,8 @@ public class EAN128 extends Code128
         getEAN128Bean().setModuleWidth(mw.getValueAsMillimeter());
 
         super.configure(cfg);
-        
-        //Checksum mode        
+
+        //Checksum mode
         getEAN128Bean().setChecksumMode(ChecksumMode.byName(
             cfg.getChild("checksum").getValue(ChecksumMode.CP_AUTO.getName())));
         //Checkdigit place holder
@@ -60,7 +60,7 @@ public class EAN128 extends Code128
                 cfg.getChild("check-digit-marker").getValue("\u00f0")));
         //Template
         getEAN128Bean().setTemplate(cfg.getChild("template").getValue(""));
-        //group seperator aka FNC_1 
+        //group seperator aka FNC_1
         getEAN128Bean().setGroupSeparator(getFirstChar(
                 cfg.getChild("group-separator").getValue("\u00f1")));
 
@@ -71,7 +71,7 @@ public class EAN128 extends Code128
                     hr.getChild("omit-brackets").getValueAsBoolean(false));
         }
     }
-    
+
     private char getFirstChar(String s) {
         if (s != null && s.length() > 0) {
             return s.charAt(0);

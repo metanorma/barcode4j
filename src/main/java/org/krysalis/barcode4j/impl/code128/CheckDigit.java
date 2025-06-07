@@ -1,12 +1,12 @@
 /*
- * Copyright 2005 Jeremias Maerki and Dietmar Bürkle.
- * 
+ * Copyright 2005 Jeremias Maerki and Dietmar Buerkle.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,11 +37,11 @@ public class CheckDigit {
     public static char calcCheckdigit11(String msg, int start, int end) {
         return calcCheckdigit(1, 1, msg, start, end);
     }
-    
+
     public static char calcCheckdigit(int oddMult, int evenMult, String msg, int start, int end) {
         int oddSum = 0;
         int evenSum = 0;
-        boolean even = false; 
+        boolean even = false;
         for (int i = end - 1; i >= start; i--) {
             if (even) {
                 evenSum += Character.digit(msg.charAt(i), 10);
