@@ -2,31 +2,46 @@ name: release
 
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
-  build:
-    name: Upload Release Asset
+  release:
+    name: Create Release
     runs-on: ubuntu-latest
+
     steps:
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
         with:
-          java-version: 1.8
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
 
-      - uses: actions/checkout@master
-
-      - name: Deploy
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          make deploy
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            .m2/repository
+          key: ${{ runner.os }}-maven-11-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-11-
+            ${{ runner.os }}-maven-
 
       - name: Run tests
-        run: |
-          make test
+        run: mvn clean verify -B
+        timeout-minutes: 30
+
+      - name: Build release artifacts
+        run: mvn clean package -DskipTests -B
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Create Release
         id: create_release
@@ -38,21 +53,43 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Automatic release of ${{ github.ref }}
+
+            ## Changes
+            See the [commit history](https://github.com/metanorma/barcode4j/compare/v${{ steps.get_version.outputs.VERSION }}...HEAD) for details.
           draft: false
           prerelease: false
 
-      - name: Get Version
-        id: get_version
-        run: |
-          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
+      - name: Upload JAR artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/barcode4j-${{ steps.get_version.outputs.VERSION }}.jar
+          asset_name: barcode4j-${{ steps.get_version.outputs.VERSION }}.jar
+          asset_content_type: application/java-archive
 
-#      - name: Upload Release Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1.0.1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ./target/barcode4j-${{ steps.get_version.outputs.VERSION }}-SNAPSHOT.jar
-#          asset_name: barcode4j-${{ steps.get_version.outputs.VERSION }}-SNAPSHOT.jar
-#          asset_content_type: application/java-archive
+      - name: Upload Sources JAR
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/barcode4j-${{ steps.get_version.outputs.VERSION }}-sources.jar
+          asset_name: barcode4j-${{ steps.get_version.outputs.VERSION }}-sources.jar
+          asset_content_type: application/java-archive
+
+      - name: Upload Javadoc JAR
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/barcode4j-${{ steps.get_version.outputs.VERSION }}-javadoc.jar
+          asset_name: barcode4j-${{ steps.get_version.outputs.VERSION }}-javadoc.jar
+          asset_content_type: application/java-archive
+
+      - name: Deploy to GitHub Packages
+        run: mvn deploy -DskipTests -B
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
