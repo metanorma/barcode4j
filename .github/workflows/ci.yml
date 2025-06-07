@@ -27,7 +27,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.jdk }}
-        distribution: 'temurin'
+        distribution: 'zulu'
         cache: maven
 
     - name: Cache Maven dependencies
@@ -58,7 +58,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '11'
-        distribution: 'temurin'
+        distribution: 'zulu'
         cache: maven
 
     - name: Cache Maven dependencies
@@ -98,7 +98,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '11'
-        distribution: 'temurin'
+        distribution: 'zulu'
         cache: maven
 
     - name: Cache Maven dependencies
@@ -139,7 +139,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '11'
-        distribution: 'temurin'
+        distribution: 'zulu'
         cache: maven
 
     - name: Cache Maven dependencies
