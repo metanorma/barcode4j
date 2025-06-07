@@ -1,12 +1,12 @@
 /*
  * Copyright 2002-2004 Jeremias Maerki.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 
 /**
  * Test class for the UPC-E implementation.
- * 
+ *
  * @author Jeremias Maerki
  * @version $Id: UPCETest.java,v 1.1 2004-09-12 17:57:54 jmaerki Exp $
  */
@@ -48,12 +48,12 @@ public class UPCETest extends TestCase {
         //Test invalid characters in message
         try {
             UPCELogicImpl logic = new UPCELogicImpl(ChecksumMode.CP_AUTO);
-            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), "123èöö2");
+            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), "123\u00e8\u00f6\u00f62");
             fail("Expected an exception complaining about illegal characters");
         } catch (IllegalArgumentException iae) {
             //must fail
         }
-        
+
         //Test less than 12 characters
         try {
             UPCELogicImpl logic = new UPCELogicImpl(ChecksumMode.CP_AUTO);
@@ -62,11 +62,11 @@ public class UPCETest extends TestCase {
         } catch (IllegalArgumentException iae) {
             //must fail
         }
-        
+
         //Test more than 12 characters
         try {
             UPCELogicImpl logic = new UPCELogicImpl(ChecksumMode.CP_AUTO);
-            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(), 
+            logic.generateBarcodeLogic(new NullClassicBarcodeLogicHandler(),
                     "123456789012344567890");
             fail("Expected an exception complaining about invalid message length");
         } catch (IllegalArgumentException iae) {
@@ -96,15 +96,15 @@ public class UPCETest extends TestCase {
     public void testMessageCompaction() throws Exception {
         for (int i = 0; i < COMPACTION_TESTS.length; i++) {
             assertEquals(
-                COMPACTION_TESTS[i][1] + " must be compacted to " 
+                COMPACTION_TESTS[i][1] + " must be compacted to "
                     + COMPACTION_TESTS[i][0],
-                COMPACTION_TESTS[i][0], 
+                COMPACTION_TESTS[i][0],
                 UPCELogicImpl.compactMessage(COMPACTION_TESTS[i][1]));
             String nocheck = COMPACTION_TESTS[i][1].substring(0, 11);
             assertEquals(
-                nocheck + " must be compacted to " 
+                nocheck + " must be compacted to "
                     + COMPACTION_TESTS[i][0],
-                COMPACTION_TESTS[i][0], 
+                COMPACTION_TESTS[i][0],
                 UPCELogicImpl.compactMessage(nocheck));
         }
         final String noUPCE = "01234567890";
@@ -123,19 +123,19 @@ public class UPCETest extends TestCase {
             //must fail
         }
     }
-    
+
     public void testMessageExpansion() throws Exception {
         for (int i = 0; i < COMPACTION_TESTS.length; i++) {
             assertEquals(
-                COMPACTION_TESTS[i][0] + " must be expanded to " 
+                COMPACTION_TESTS[i][0] + " must be expanded to "
                     + COMPACTION_TESTS[i][1],
-                COMPACTION_TESTS[i][1], 
+                COMPACTION_TESTS[i][1],
                 UPCELogicImpl.expandMessage(COMPACTION_TESTS[i][0]));
             String nocheck = COMPACTION_TESTS[i][0].substring(0, 7);
             assertEquals(
-                nocheck + " must be expanded to " 
+                nocheck + " must be expanded to "
                     + COMPACTION_TESTS[i][1],
-                COMPACTION_TESTS[i][1], 
+                COMPACTION_TESTS[i][1],
                 UPCELogicImpl.expandMessage(nocheck));
         }
     }
@@ -144,7 +144,7 @@ public class UPCETest extends TestCase {
         StringBuffer sb = new StringBuffer();
         UPCELogicImpl logic;
         String expected;
-        
+
         logic = new UPCELogicImpl(ChecksumMode.CP_AUTO);
         logic.generateBarcodeLogic(new MockClassicBarcodeLogicHandler(sb), "0425261");
         expected = "<BC>"
@@ -174,7 +174,7 @@ public class UPCETest extends TestCase {
         //System.out.println(expected);
         //System.out.println(sb.toString());
         assertEquals(expected, sb.toString());
-        
+
         //The same but with UPC-A message
         sb.setLength(0);
         logic = new UPCELogicImpl(ChecksumMode.CP_AUTO);
@@ -182,7 +182,7 @@ public class UPCETest extends TestCase {
         //System.out.println(expected);
         //System.out.println(sb.toString());
         assertEquals(expected, sb.toString());
-        
+
         //The same but with UPC-A message without checksum
         sb.setLength(0);
         logic = new UPCELogicImpl(ChecksumMode.CP_AUTO);
@@ -190,7 +190,7 @@ public class UPCETest extends TestCase {
         //System.out.println(expected);
         //System.out.println(sb.toString());
         assertEquals(expected, sb.toString());
-        
+
     }
 
 }
