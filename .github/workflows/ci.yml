@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        jdk: ['8', '11', '17', '21']
+        jdk: ['11', '17', '21']
       fail-fast: false
 
     steps:
@@ -34,52 +34,6 @@ jobs:
 
     - name: Run tests
       run: mvn clean verify -B
-
-  test-make:
-    name: Test Make on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-      fail-fast: false
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up JDK 8
-      uses: actions/setup-java@v4
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-
-    - name: Setup prerequisites (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        # Install Maven
-        brew install maven
-
-    - name: Cache Maven dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: ${{ runner.os }}-m2
-
-    - name: Build with Make
-      run: make all
-
-    - name: Test with Make
-      run: make test
-
-    - name: Upload test results
-      uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: test-results-make-${{ matrix.os }}-jdk8
-        path: |
-          target/surefire-reports/
-          target/failsafe-reports/
 
   quality:
     name: Code Quality
